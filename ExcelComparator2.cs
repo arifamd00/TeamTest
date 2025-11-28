@@ -276,22 +276,25 @@ namespace TestProject1
                         double num;
                         DateTime dtValue;
 
-                        // 🔵 Case 1: raw string is an OADate (numeric but actually a date)
+                        // Case 1: OADate → convert to normal date format
                         if (double.TryParse(raw, out num) && num > 20000 && num < 60000)
                         {
-                            // Convert OADate number → DateTime string
                             DateTime oa = DateTime.FromOADate(num);
 
                             cell.DataType = CellValues.String;
-                            cell.CellValue = new CellValue(oa.ToString("dd-MM-yyyy HH:mm:ss"));
+                            cell.CellValue = new CellValue(
+                                oa.ToString("MM/dd/yyyy hh:mm:ss tt")
+                            );
                         }
-                        // 🔵 Case 2: looks like a normal date string
+                        // Case 2: already a valid date string → convert to standard format
                         else if (DateTime.TryParse(raw, out dtValue))
                         {
                             cell.DataType = CellValues.String;
-                            cell.CellValue = new CellValue(dtValue.ToString("dd-MM-yyyy HH:mm:ss"));
+                            cell.CellValue = new CellValue(
+                                dtValue.ToString("MM/dd/yyyy hh:mm:ss tt")
+                            );
                         }
-                        // 🔵 Case 3: normal numeric value
+                        // Case 3: numeric (not date)
                         else if (double.TryParse(raw, out num))
                         {
                             cell.DataType = null;
@@ -299,7 +302,7 @@ namespace TestProject1
                                 num.ToString(System.Globalization.CultureInfo.InvariantCulture)
                             );
                         }
-                        // 🔵 Case 4: text
+                        // Case 4: normal text
                         else
                         {
                             cell.DataType = CellValues.String;
